@@ -7,10 +7,10 @@ on:
         type: choice
         description: "Select runs-on"
         required: true
-        default: "self-hosted, macOS, ARM64"
+        default: "ARM64"
         options:
-          - "x64"
           - "ARM64"
+          - "x64"
       target:
         type: choice
         description: "Select tartget"
