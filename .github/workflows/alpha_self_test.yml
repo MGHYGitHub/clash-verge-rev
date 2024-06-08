@@ -12,7 +12,8 @@ env:
 
 jobs:
   alpha:
-    runs-on: self-hosted
+    runs-on: [self-hosted, macOS, x64]
+    # runs-on: [self-hosted, macOS, ARM64]
     strategy:
       fail-fast: false
       matrix:
