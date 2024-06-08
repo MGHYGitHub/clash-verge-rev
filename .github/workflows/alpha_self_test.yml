@@ -2,6 +2,23 @@ name: Alpha self-hosted Build
 
 on:
   workflow_dispatch:
+    inputs:
+      runs_on:
+        type: choice
+        description: "Select runs-on"
+        required: true
+        default: "self-hosted, macOS, ARM64"
+        options:
+          - "x64"
+          - "ARM64"
+      target:
+        type: choice
+        description: "Select tartget"
+        required: true
+        default: "aarch64-apple-darwin"
+        options:
+          - "aarch64-apple-darwin"
+          - "x86_64-apple-darwin"
   push:
     branches: [main]
     tags-ignore: [updater, alpha]
@@ -12,13 +29,12 @@ env:
 
 jobs:
   alpha:
-    runs-on: [self-hosted, macOS, x64]
-    # runs-on: [self-hosted, macOS, ARM64]
+    runs-on: [self-hosted, "${{ inputs.runs_on }}"]
     strategy:
       fail-fast: false
       matrix:
         include:
-          - target: x86_64-apple-darwin
+          - target: ${{ inputs.target}}
 
     steps:
       - name: Checkout Repository
@@ -28,7 +44,7 @@ jobs:
         uses: dtolnay/rust-toolchain@1.77.0
 
       - name: Add Rust Target
-        run: rustup target add x86_64-apple-darwin
+        run: rustup target add ${{ inputs.target}}
 
       - name: Rust Cache
         uses: Swatinem/rust-cache@v2
@@ -49,7 +65,7 @@ jobs:
       - name: Pnpm install and check
         run: |
           pnpm i
-          pnpm check x86_64-apple-darwin
+          pnpm check ${{ inputs.target}}
 
       - name: Download and install Apple intermediate certificates
         run: |
@@ -77,10 +93,4 @@ jobs:
           releaseDraft: false
           prerelease: true
           tauriScript: pnpm
-          args: --target x86_64-apple-darwin
-
-      - name: Portable Bundle
-        if: matrix.os == 'windows-latest'
-        run: pnpm portable x86_64-apple-darwin --alpha
-        env:
-          GITHUB_TOKEN: ${{ secrets.GITHUB_TOKEN }}
+          args: --target ${{ inputs.target}}
