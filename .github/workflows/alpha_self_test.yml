@@ -18,7 +18,7 @@ jobs:
       fail-fast: false
       matrix:
         include:
-          - target: aarch64-apple-darwin
+          - target: x86_64-apple-darwin
 
     steps:
       - name: Checkout Repository
@@ -28,7 +28,7 @@ jobs:
         uses: dtolnay/rust-toolchain@1.77.0
 
       - name: Add Rust Target
-        run: rustup target add aarch64-apple-darwin
+        run: rustup target add x86_64-apple-darwin
 
       - name: Rust Cache
         uses: Swatinem/rust-cache@v2
@@ -49,7 +49,7 @@ jobs:
       - name: Pnpm install and check
         run: |
           pnpm i
-          pnpm check aarch64-apple-darwin
+          pnpm check x86_64-apple-darwin
 
       - name: Download and install Apple intermediate certificates
         run: |
@@ -77,10 +77,10 @@ jobs:
           releaseDraft: false
           prerelease: true
           tauriScript: pnpm
-          args: --target aarch64-apple-darwin
+          args: --target x86_64-apple-darwin
 
       - name: Portable Bundle
         if: matrix.os == 'windows-latest'
-        run: pnpm portable aarch64-apple-darwin --alpha
+        run: pnpm portable x86_64-apple-darwin --alpha
         env:
           GITHUB_TOKEN: ${{ secrets.GITHUB_TOKEN }}
