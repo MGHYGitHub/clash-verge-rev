@@ -63,6 +63,7 @@ jobs:
         if: matrix.os == 'macos-latest'
         run: |
           curl -O https://www.apple.com/certificateauthority/DeveloperIDG2CA.cer
+          sudo security authorizationdb write com.apple.trust-settings.admin allow
           sudo security add-trusted-cert -d -r trustRoot -k ${HOME}/Library/Keychains/login.keychain-db DeveloperIDG2CA.cer
 
       - name: Tauri build
